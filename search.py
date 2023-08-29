@@ -87,12 +87,58 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import Stack
+    # stackXY: each item is in format ((x,y), path)
+    stackXY = Stack() 
+    
+    stackXY.push((problem.getStartState(), []))
+    
+    visited = []   # Keep track of visited states
+    path = []      # Keep track of the path so far
+    
+    while True:
+        # Terminate condition: can't find the solution
+        if(stackXY.isEmpty()):
+            return []
+        xy, path = stackXY.pop()
+        visited.append(xy)
+        
+        # Terminate condition: successfully find the solution
+        if problem.isGoalState(xy):
+            return path
+        else:
+            successors = problem.getSuccessors(xy)
+            for item in successors:
+                if(item[0] not in visited):
+                    newPath = path + [item[1]]
+                    stackXY.push((item[0], newPath))
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import Queue
+    # queueXY: each item is in format ((x,y), path)
+    queueXY = Queue()
+    queueXY.push((problem.getStartState(), []))
+    
+    visited = []   # Keep track of visited states
+    path = []      # Keep track of the path so far
+    
+    while True:
+        # Terminate condition: can't find the solution
+        if(queueXY.isEmpty()):
+            return []
+        xy, path = queueXY.pop()
+        visited.append(xy)
+        
+        if(problem.isGoalState(xy)):
+            return path
+        else:
+            successors = problem.getSuccessors(xy)
+            for item in successors:
+                if(item not in visited):
+                    newPath = path + [item[1]]
+                    queueXY.push((item[0], newPath))
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
