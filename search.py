@@ -121,8 +121,8 @@ def breadthFirstSearch(problem: SearchProblem):
     queueXY = Queue()
     queueXY.push((problem.getStartState(), []))
     
-    path = []      # Keep track of the path so far
-    expanded = {problem.getStartState()}
+    path = []                                   # Keep track of the path so far
+    expanded = {problem.getStartState()}        # Keep track of the expanded state so far
     while True:
         # Terminate condition: can't find the solution
         if(queueXY.isEmpty()):
@@ -144,7 +144,26 @@ def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     from util import PriorityQueue
-    
+    fringe = PriorityQueue()
+    fringe.push(problem.getStartState(), 0)
+    costPath = {problem.getStartState(): [0,[]]}      # keep track of the shortest path to a node so far 
+
+    while not fringe.isEmpty():
+        xy = fringe.pop()
+        cost, path = costPath[xy]      # extract the priority of the first element
+        if(problem.isGoalState(xy)):
+            return path
+        else:
+            successors = problem.getSuccessors(xy)
+            for item in successors:
+                if item[0] not in costPath.keys():
+                    fringe.push(item[0], cost + item[2])
+                    costPath[item[0]] = [cost + item[2], path + [item[1]]]
+                else:
+                    if(item[2] + cost < costPath[item[0]][0]):
+                        fringe.update(item[0], item[2] + cost)
+                        costPath[item[0]] = [cost + item[2], path + [item[1]]]
+    return []
 
 def nullHeuristic(state, problem=None):
     """
@@ -156,8 +175,28 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import PriorityQueue
+    fringe = PriorityQueue()
+    fringe.push(problem.getStartState(), 0)               # The priority of each item in queue is g_cost + h_cost
+    costPath = {problem.getStartState(): [0, 0, []]}      # each node has a tupe (g_cost, h_cost, path) associated with it
 
+    while not fringe.isEmpty():
+        xy = fringe.pop()
+        g_cost, h_cost, path = costPath[xy]      # extract the priority of the first element
+        if(problem.isGoalState(xy)):
+            return path
+        else:
+            successors = problem.getSuccessors(xy)
+            for item in successors:
+                if item[0] not in costPath.keys():
+                    costPath[item[0]] = [g_cost + item[2], heuristic(item[0], problem), path + [item[1]]]
+                    fringe.push(item[0], g_cost + item[2] + heuristic(item[0], problem))
+                else:
+                    f = g_cost + item[2] + heuristic(item[0], problem)
+                    if(f < costPath[item[0]][0]  + costPath[item[0]][1]):
+                        fringe.update(item[0], f)
+                        costPath[item[0]] = [g_cost + item[2], heuristic(item[0], problem), path + [item[1]]]
+    return []
 
 # Abbreviations
 bfs = breadthFirstSearch
