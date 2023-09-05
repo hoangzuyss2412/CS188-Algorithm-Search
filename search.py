@@ -94,7 +94,6 @@ def depthFirstSearch(problem: SearchProblem):
     stackXY.push((problem.getStartState(), []))
     
     visited = []   # Keep track of visited states
-    path = []      # Keep track of the path so far
     
     while True:
         # Terminate condition: can't find the solution
@@ -121,7 +120,6 @@ def breadthFirstSearch(problem: SearchProblem):
     queueXY = Queue()
     queueXY.push((problem.getStartState(), []))
     
-    path = []                                   # Keep track of the path so far
     expanded = {problem.getStartState()}        # Keep track of the expanded state so far
     while True:
         # Terminate condition: can't find the solution
