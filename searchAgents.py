@@ -491,7 +491,23 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return foodGrid.count()
+    def getL1Distance(pos1, pos2):
+        return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
+    
+    dotNum = foodGrid.count()
+    if(dotNum == 0):
+        return 0
+    dotList = foodGrid.asList()
+    min1 = min(getL1Distance(position, dot) for dot in dotList)
+    
+    # Create a set to keep track of nth least weight of edge, where n = dotNum - 1
+    if(dotNum == 1):
+        min2 = 0
+    else:
+        # min2 = min(getL1Distance(dot1, dot2) for dot1 in dotList for dot2 in dotList if dot2 != dot1)
+        min2 = sum(sorted(list(getL1Distance(dotList[i], dotList[j]) for i in range(dotNum) for j in range(i+1, dotNum)))[0:dotNum])
+        
+    return max(min1 + min2, dotNum)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
