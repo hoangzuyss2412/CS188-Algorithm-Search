@@ -120,7 +120,8 @@ def breadthFirstSearch(problem: SearchProblem):
     queueXY = Queue()
     queueXY.push((problem.getStartState(), []))
     
-    expanded = {problem.getStartState()}        # Keep track of the expanded state so far
+    expanded = set()                        # Keep track of the expanded states so far
+    expanded.add(problem.getStartState())
     while True:
         # Terminate condition: can't find the solution
         if(queueXY.isEmpty()):
@@ -191,9 +192,10 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
                     fringe.push(item[0], g_cost + item[2] + heuristic(item[0], problem))
                 else:
                     f = g_cost + item[2] + heuristic(item[0], problem)
+                    # You wont never need to update the cost of an expanded state if your heuristic is consistent
                     if(f < costPath[item[0]][0]  + costPath[item[0]][1]):
                         fringe.update(item[0], f)
-                        costPath[item[0]] = [g_cost + item[2], heuristic(item[0], problem), path + [item[1]]]
+                        costPath[item[0]] = [g_cost + item[2], heuristic(item[0], problem), path + [item[1]]]      
     return []
 
 # Abbreviations
